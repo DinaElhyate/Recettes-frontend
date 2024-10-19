@@ -10,6 +10,9 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Recipes from "./pages/Recipes";
 import Settings from "./pages/Settings";
+import Auth from "./pages/Auth";
+import RecetteDetail from "./components/RecetteDetail";
+import RecetteForm from "./components/RecetteForm";
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/settings" element={<Settings />} />
+          <Route  path="/auth" element={<Auth/>}/>
+          <Route path="/RecetteDetail" element={<RecetteDetail/>}/>
+          <Route path="/RecetteForm" element={<RecetteForm/>}/>
         </Routes>
       </div>
       <Footer />
