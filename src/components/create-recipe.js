@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 export default function CreateRecipePage() {
     const [user, setUser] = useState({
@@ -20,29 +21,42 @@ export default function CreateRecipePage() {
         instructions: [""],
     });
 
-    const handleSubmit = (e) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const updatedUser = {
-            ...user,
-            recipes: [...user.recipes, {
-                recipeId: Math.random().toString(36).substr(2, 9),
-                ...newRecipe
-            }],
-        };
-        setUser(updatedUser);
-        setNewRecipe({
-            title: "",
-            description: "",
-            image: "",
-            ingredients: [""],
-            instructions: [""],
-        });
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`/api/recipes/${user.userId}`, newRecipe);
+            const createdRecipe = response.data;
+            setUser(prevUser => ({
+                ...prevUser,
+                recipes: [...prevUser.recipes, createdRecipe]
+            }));
+            setNewRecipe({
+                title: "",
+                description: "",
+                image: "",
+                ingredients: [""],
+                instructions: [""],
+            });
+            alert('Recette créée avec succès!');
+        } catch (error) {
+            console.error('Erreur lors de la création de la recette:', error);
+            alert('Échec de la création de la recette. Veuillez réessayer.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setNewRecipe({ ...newRecipe, image: URL.createObjectURL(file) });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewRecipe({ ...newRecipe, image: reader.result });
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -57,17 +71,20 @@ export default function CreateRecipePage() {
                         value={newRecipe.title}
                         onChange={(e) => setNewRecipe({ ...newRecipe, title: e.target.value })}
                         className="input-field"
+                        required
                     />
                     <textarea
                         placeholder="Description"
                         value={newRecipe.description}
                         onChange={(e) => setNewRecipe({ ...newRecipe, description: e.target.value })}
                         className="input-field"
+                        required
                     />
                     <input
                         type="file"
                         onChange={handleImageChange}
                         className="input-field"
+                        accept="image/*"
                     />
                     <div className="ingredients-section">
                         <div className="ingredients-header">
@@ -92,7 +109,20 @@ export default function CreateRecipePage() {
                                         setNewRecipe({ ...newRecipe, ingredients: updatedIngredients });
                                     }}
                                     className="input-field"
+                                    required
                                 />
+                                {index > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const updatedIngredients = newRecipe.ingredients.filter((_, i) => i !== index);
+                                            setNewRecipe({ ...newRecipe, ingredients: updatedIngredients });
+                                        }}
+                                        className="btn remove-btn"
+                                    >
+                                        -
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -119,11 +149,26 @@ export default function CreateRecipePage() {
                                         setNewRecipe({ ...newRecipe, instructions: updatedInstructions });
                                     }}
                                     className="input-field"
+                                    required
                                 />
+                                {index > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const updatedInstructions = newRecipe.instructions.filter((_, i) => i !== index);
+                                            setNewRecipe({ ...newRecipe, instructions: updatedInstructions });
+                                        }}
+                                        className="btn remove-btn"
+                                    >
+                                        -
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>
-                    <button type="submit" className="btn submit-btn">Ajouter la recette</button>
+                    <button type="submit" className="btn submit-btn" disabled={isLoading}>
+                        {isLoading ? 'Création en cours...' : 'Ajouter la recette'}
+                    </button>
                 </form>
             </div>
             <style jsx>{`
@@ -131,13 +176,13 @@ export default function CreateRecipePage() {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: 700px;
+                    min-height: 100vh;
                     background-color: #f5f5f5;
-                    margin-bottom: 500px;
-                    margin-top: 30px;
+                    padding: 20px;
                 }
                 .recipe-container {
-                    width: 700px;
+                    width: 100%;
+                    max-width: 700px;
                     background: white;
                     border-radius: 10px;
                     padding: 20px;
@@ -154,11 +199,11 @@ export default function CreateRecipePage() {
                     gap: 10px;
                 }
                 .input-field {
-                    width: calc(100% - 40px);
+                    width: 100%;
                     padding: 10px;
                     border: 1px solid #ccc;
                     border-radius: 5px;
-                    margin-bottom: 10px;
+                    font-size: 16px;
                 }
                 .input-row {
                     display: flex;
@@ -173,11 +218,16 @@ export default function CreateRecipePage() {
                     border-radius: 5px;
                     cursor: pointer;
                     font-weight: bold;
-                    transition: transform 0.2s;
+                    transition: background-color 0.2s, transform 0.2s;
                 }
                 .btn:hover {
                     background-color: #ff4747;
                     transform: translateY(-2px);
+                }
+                .btn:disabled {
+                    background-color: #cccccc;
+                    cursor: not-allowed;
+                    transform: none;
                 }
                 .submit-btn {
                     margin-top: 20px;
@@ -185,24 +235,24 @@ export default function CreateRecipePage() {
                 }
                 .add-btn {
                     background-color: #4CAF50;
-                    padding: 5px;
-                    font-size: 1.5em;
-                    line-height: 0;
-                    margin-top: 0;
+                    padding: 5px 10px;
+                    font-size: 1.2em;
+                }
+                .remove-btn {
+                    background-color: #f44336;
+                    padding: 5px 10px;
+                    font-size: 1.2em;
                 }
                 .ingredients-section,
                 .instructions-section {
-                    position: relative;
+                    margin-bottom: 20px;
                 }
-                .ingredients-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 500px;
-                }
+                .ingredients-header,
                 .instructions-header {
                     display: flex;
+                    justify-content: space-between;
                     align-items: center;
-                    gap: 535px;
+                    margin-bottom: 10px;
                 }
             `}</style>
         </div>
