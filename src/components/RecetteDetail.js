@@ -92,6 +92,7 @@ export default function RecetteDetail() {
     };
 
     const styles = {
+        
         container: {
             padding: '20px',
             fontFamily: 'Arial, sans-serif',

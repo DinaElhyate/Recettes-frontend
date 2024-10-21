@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function RecetteForm() {
+    const navigate = useNavigate();
     const [recipes, setRecipes] = useState([
         {
             titre: "Spaghetti Bolognese",
@@ -34,28 +37,44 @@ export default function RecetteForm() {
         }
     };
 
-    const deleteRecipe = (index) => {
-        const updatedRecipes = [...recipes];
-        updatedRecipes.splice(index, 1);
-        setRecipes(updatedRecipes);
+    const deleteRecipe = async (index) => {
+        const userId = "123"; // Remplacez par l'ID de l'utilisateur actuel
+        const recipeId = recipes[index].id; // Assurez-vous que chaque recette a un `id` correspondant au backend
+    
+        try {
+            const response = await axios.delete(`/api/recipes/${userId}/${recipeId}`, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                const updatedRecipes = [...recipes];
+                updatedRecipes.splice(index, 1);
+                setRecipes(updatedRecipes);
+            } else {
+                console.error("Erreur lors de la suppression de la recette");
+            }
+        } catch (error) {
+            console.error("Erreur réseau : ", error);
+        }
     };
+    
 
     const editRecipe = (index) => {
-        setNewRecipe(recipes[index]);
         setEditingIndex(index);
-        setShowForm(true);
+        navigate('/edit-recipe', { state: { recipe: recipes[index] } });
     };
+    
 
     const toggleForm = () => {
         setShowForm(!showForm);
-        setNewRecipe({ titre: "", description: "", image: "" });
-        setEditingIndex(null);
+        navigate('/create-recipe'); 
     };
 
     const styles = {
         container: {
             padding: '20px',
             fontFamily: 'Arial, sans-serif',
+            marginBottom:'300px',
         },
         buttonRightContainer: {
             display: 'flex',

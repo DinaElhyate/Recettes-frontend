@@ -14,6 +14,8 @@ import Auth from "./pages/Auth";
 import About from "./components/About";
 import RecetteDetail from "./components/RecetteDetail";
 import RecetteForm from "./components/RecetteForm";
+import CreateRecipePage from "./components/create-recipe";
+import EditRecipePage from "./components/edit-recipe";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route  path="/auth" element={<Auth/>}/>
           <Route path="/RecetteDetail" element={<RecetteDetail/>}/>
           <Route path="/RecetteForm" element={<RecetteForm/>}/>
+          <Route path="/create-recipe" element={<CreateRecipePage />} />
+          <Route path="/edit-recipe" element={<EditRecipePage />} />
         </Routes>
       </div>
 
