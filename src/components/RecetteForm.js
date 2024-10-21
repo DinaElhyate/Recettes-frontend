@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function RecetteForm() {
+    const navigate = useNavigate();
     const [recipes, setRecipes] = useState([
         {
             titre: "Spaghetti Bolognese",
@@ -41,21 +43,21 @@ export default function RecetteForm() {
     };
 
     const editRecipe = (index) => {
-        setNewRecipe(recipes[index]);
+        
         setEditingIndex(index);
-        setShowForm(true);
+        navigate('/edit-recipe', { state: { recipe: recipes[index] } });
     };
 
     const toggleForm = () => {
         setShowForm(!showForm);
-        setNewRecipe({ titre: "", description: "", image: "" });
-        setEditingIndex(null);
+        navigate('/create-recipe'); 
     };
 
     const styles = {
         container: {
             padding: '20px',
             fontFamily: 'Arial, sans-serif',
+            marginBottom:'300px',
         },
         buttonRightContainer: {
             display: 'flex',
