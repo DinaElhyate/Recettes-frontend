@@ -3,42 +3,34 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Auth() {
-  const navigate = useNavigate(); // Initialiser useNavigate
-  const [emailOrPhoneFocused, setEmailOrPhoneFocused] = useState(false);
-  const [usernameFocused, setUsernameFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    const userData = {
-      username,
-      email,
-      password
-    };
-  
-    console.log('Données envoyées :', userData);
-  
-    try {
-      const response = await axios.post('http://localhost:8085/api/users', userData);
-      console.log('Utilisateur créé avec succès :', response.data);
 
-      // Rediriger vers la page d'accueil après une création réussie
-      navigate('/'); // Remplacez '/home' par le chemin correct de votre page d'accueil
+    const userData = { email, password }; // Connexion
+
+    try {
+      const url = isLogin ? 'http://localhost:8085/api/users/login' : 'http://localhost:8085/api/users';
+      const response = await axios.post(url, userData);
+      
+      console.log('Réponse de l\'API :', response.data);
+      navigate('/'); // Rediriger vers la page d'accueil après une connexion réussie
+
     } catch (error) {
-      console.error('Erreur lors de la création de l’utilisateur :', error);
-      if (error.response) {
-        console.error('Détails de la réponse d\'erreur :', error.response.data);
-        console.error('Statut de la réponse :', error.response.status);
+      console.error('Erreur lors de la connexion :', error);
+      if (error.response && error.response.status === 401) {
+        setErrorMessage('Mot de passe ou email incorrect');
+      } else {
+        setErrorMessage('Une erreur s\'est produite. Veuillez réessayer.');
       }
     }
   };
-  
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -46,98 +38,27 @@ export default function Auth() {
           <Link to="/" className="logo">F<span>oo</span>diesHub</Link>
           <h2>{isLogin ? 'Se connecter' : 'Inscription'}</h2>
           <form onSubmit={handleSubmit}>
-            {isLogin ? (
+            {isLogin && (
               <>
                 <div className="input-group">
                   <input
                     type="text"
-                    id="email-or-phone"
-                    placeholder=" "
-                    onFocus={() => setEmailOrPhoneFocused(true)}
-                    onBlur={() => setEmailOrPhoneFocused(false)}
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
-                  <label htmlFor="email-or-phone" className={emailOrPhoneFocused ? 'focused' : ''}>
-                    Email ou téléphone
-                  </label>
-                </div>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    id="username"
-                    placeholder=" "
-                    onFocus={() => setUsernameFocused(true)}
-                    onBlur={() => setUsernameFocused(false)}
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                  />
-                  <label htmlFor="username" className={usernameFocused ? 'focused' : ''}>
-                    Nom d'utilisateur
-                  </label>
                 </div>
                 <div className="input-group">
                   <input
                     type="password"
-                    id="password"
-                    placeholder=" "
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => setPasswordFocused(false)}
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
+                    placeholder="Mot de passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
-                  <label htmlFor="password" className={passwordFocused ? 'focused' : ''}>
-                    Mot de passe
-                  </label>
                 </div>
-                <div className="forgot-password">
-                  <a href="/forgot-password">Mot de passe oublié ?</a>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    id="new-username"
-                    placeholder=" "
-                    onFocus={() => setUsernameFocused(true)}
-                    onBlur={() => setUsernameFocused(false)}
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                  />
-                  <label htmlFor="new-username" className={usernameFocused ? 'focused' : ''}>
-                    Nom d'utilisateur
-                  </label>
-                </div>
-                <div className="input-group">
-                  <input
-                    type="email"
-                    id="new-email"
-                    placeholder=" "
-                    onFocus={() => setEmailOrPhoneFocused(true)}
-                    onBlur={() => setEmailOrPhoneFocused(false)}
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                  />
-                  <label htmlFor="new-email" className={emailOrPhoneFocused ? 'focused' : ''}>
-                    Email
-                  </label>
-                </div>
-                <div className="input-group">
-                  <input
-                    type="password"
-                    id="new-password"
-                    placeholder=" "
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => setPasswordFocused(false)}
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                  />
-                  <label htmlFor="new-password" className={passwordFocused ? 'focused' : ''}>
-                    Mot de passe
-                  </label>
-                </div>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
               </>
             )}
             <button type="submit" className="btn">
@@ -147,26 +68,14 @@ export default function Auth() {
           <div className="signup">
             <p>
               {isLogin ? (
-                <>
-                  Vous n'avez pas de compte ? <a href="#" onClick={() => setIsLogin(false)}>Inscrivez-vous</a>
-                </>
+                <span>Vous n'avez pas de compte ? <a href="#" onClick={() => setIsLogin(false)}>Inscrivez-vous</a></span>
               ) : (
-                <>
-                  Vous avez déjà un compte ? <a href="#" onClick={() => setIsLogin(true)}>Se connecter</a>
-                </>
+                <span>Vous avez déjà un compte ? <a href="#" onClick={() => setIsLogin(true)}>Se connecter</a></span>
               )}
             </p>
           </div>
         </div>
-        <div className="description">
-          <h3>Nous sommes plus qu'une simple entreprise</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </p>
-        </div>
       </div>
-
       <style jsx>{`
         .auth-page {
           display: flex;
@@ -234,48 +143,47 @@ export default function Auth() {
           border-color: var(--primary-color);
           outline: none;
         }
-        .input-group input:focus + label,
-        .input-group input:not(:placeholder-shown) + label {
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label {
           top: -10px;
           left: 10px;
           font-size: 0.8em;
           color: var(--primary-color);
         }
+        .error-message {
+          color: red; 
+          font-size: 0.9em; 
+          margin-top: 5px; 
+        }
         .forgot-password {
-          text-align: right;
           margin-top: 10px;
-        }
-        .signup {
-          text-align: center;
-          margin-top: 20px;
-        }
-        .description {
-          text-align: center;
-          padding-left: 40px;
-          background-color: var(--primary-color);
-          color:white;
-        }
-        .description h3 {
-          margin-top: 100px;
-        }
-        .description p {
-          font-size: 0.9em;
-           margin-top: 50px;
-             color:white;
+          text-align: right; 
         }
         .btn {
           width: 100%;
           padding: 10px;
-          font-size: 1em;
-          color: white;
           background-color: var(--primary-color);
           border: none;
           border-radius: 5px;
+          color: white;
+          font-size: 1em;
           cursor: pointer;
-          transition: background-color 0.3s ease;
         }
         .btn:hover {
           background-color: darken(var(--primary-color), 10%);
+        }
+        .signup {
+          margin-top: 20px;
+          text-align: center; 
+        }
+        .signup a {
+          color: var(--primary-color);
+        }
+        .description h3 {
+          margin-bottom: 20px;
+          font-size: 1.5em;
+        }
+        .description p {
+          line-height: 1.5;
         }
       `}</style>
     </div>
