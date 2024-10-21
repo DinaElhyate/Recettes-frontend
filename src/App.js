@@ -5,12 +5,13 @@ import {
 } from "react-router-dom"
 
 import Navbar from "./components/Navbar"
-import Footer from "./components/Footer";
+
 
 import Home from "./pages/Home";
 import Recipes from "./pages/Recipes";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
+import About from "./components/About";
 import RecetteDetail from "./components/RecetteDetail";
 import RecetteForm from "./components/RecetteForm";
 
@@ -28,7 +29,7 @@ function App() {
           <Route path="/RecetteForm" element={<RecetteForm/>}/>
         </Routes>
       </div>
-      <Footer />
+
     </Router>
   )
 }

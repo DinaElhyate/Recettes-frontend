@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import RecipeCard from "../components/RecipeCard";
+import RecipeCard from "./RecipeCard";
 export default function RecetteDetail() {
     const recipeData = {
         titre: "Recette de test",

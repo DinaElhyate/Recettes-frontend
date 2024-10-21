@@ -1,13 +1,13 @@
+import React from 'react';
 import HeroSection from "../components/HeroSection";
 import ImproveSkills from "../components/ImproveSkills";
 import QouteSection from "../components/QuoteSection";
 import ChiefsSection from "../components/ChiefsSection";
-import Recipes from "./Recipes";
-import RecipeCard from "../components/RecipeCard";
+import Header from "../components/Header";
+import VideoPlayer from "../components/VideoPlayer"; // Assurez-vous que ce chemin est correct
 import NewsletterSection from "../components/NewsletterSection";
 
 const recipes = [
-    
     {
         title: "Spaghetti and Meatballs",
         image: "/img/gallery/img_4.jpg",
@@ -40,22 +40,23 @@ const recipes = [
     }
 ].sort(() => Math.random() - 0.5)
 
+export default function Home() {
+    // Remplacez par l'ID de la vidéo YouTube que vous souhaitez intégrer
+    const videoId = "https://www.youtube.com/watch?v=sEtRGXU-Mbg"; // Exemple d'ID de vidéo pour des pancakes fluffy
+    const videoUrl = `https://www.youtube.com/embed/${videoId}`; // Formatez l'URL correctement
 
-export default function Home(){
     return (
         <div>
+            <div style={{ marginBottom: '7em' }}>
+                <Header />
+            </div>
             <HeroSection />
             <ImproveSkills />
             <QouteSection />
+            {/* Passer l'URL de la vidéo au composant VideoPlayer */}
+            <VideoPlayer videoUrl={videoUrl} />
             <ChiefsSection />
-            <h1>Recettes</h1>
-            <div className="recipes-container">
-                {/* <RecipeCard /> */}
-                {recipes.map((recipe, index) => (
-                    <RecipeCard key={index} recipe={recipe} />
-                ))}
-            </div>
-            <NewsletterSection /> 
+            <NewsletterSection />
         </div>
-    )
+    );
 }

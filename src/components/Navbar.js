@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
 
 import { useState } from "react"
-import Sidebar from "./Sidebar"
+
 
 import { faHome, faList, faCog } from "@fortawesome/free-solid-svg-icons"
 
@@ -49,7 +49,7 @@ export default function Navbar(){
                     <div className="bar"></div>
                 </div>
             </div>
-            { showSidebar && <Sidebar close={closeSidebar} links={links} /> }
+
         </>
     )
 }
