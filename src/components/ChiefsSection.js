@@ -2,12 +2,7 @@ import ChiefCard from "./ChiefCard"
 
 export default function ChiefsSection(){
     const chiefs = [
-        {
-            name: "Juan Carlos",
-            img: "/img/top-chiefs/img_1.jpg",
-            recipesCount: "10",
-            cuisine: "Mexican",
-        },
+       
         {
             name: "John Doe",
             img: "/img/top-chiefs/img_2.jpg",
