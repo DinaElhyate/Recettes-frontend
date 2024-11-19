@@ -1,8 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function RecipeCard({ recipe }) {
+export default function RecipeCard({ recipe , userId , recipeId }) {
+
+    const navigate = useNavigate();
+
     return (
-        <div className="recipe-card">
+        <div className="recipe-card" onClick={()=>navigate(`/RecetteDetail/user123/${recipeId}`)}>
             <div className="image-container">
                 <img
                     src={recipe.image || "/default-recipe.jpg"} 
@@ -52,6 +56,7 @@ export default function RecipeCard({ recipe }) {
                 .recipe-details {
                     padding: 1rem;
                     flex-grow: 1;
+                    margin-bottom:10px;
                 }
 
                 .recipe-title {

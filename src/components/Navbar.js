@@ -25,7 +25,7 @@ export default function Navbar() {
 
     const commonLinks = [
         { name: "Accueil", path: "/", icon: faHome },
-        { name: "Recettes", path: "/recipes", icon: faList },
+        { name: "Recettes", path: "/recipes/", icon: faList },
         { name: "Paramètres", path: "/settings", icon: faCog },
     ];
 

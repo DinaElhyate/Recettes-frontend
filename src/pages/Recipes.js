@@ -7,6 +7,7 @@ export default function Recipes() {
     const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    
 
     useEffect(() => {
         const fetchRecipes = async () => {
@@ -20,6 +21,7 @@ export default function Recipes() {
                 const allRecipes = data.flatMap(user =>
                     user.recipes.map(recipe => ({
                         ...recipe,
+                        userId: user.userId,
                         username: user.username,
                         role: user.role,
                         userImage: user.image || "default-image-path.png",
@@ -35,6 +37,8 @@ export default function Recipes() {
                 );
 
                 const filteredRecipes = allRecipes.filter(recipe => recipe.title);
+
+                console.log(filteredRecipes);
                 setRecipes(filteredRecipes);
             } catch (error) {
                 setError(error);
@@ -70,6 +74,8 @@ export default function Recipes() {
             <div className="recipes-container">
                 {filteredRecipes.sort(() => Math.random() - 0.5).map((recipe, index) => (
                     <RecipeCard
+                        userId = {recipe.userId}
+                        recipeId = {recipe.id}
                         key={index}
                         recipe={{
                             ...recipe,

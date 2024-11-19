@@ -28,10 +28,10 @@ function App() {
           <Route path="/" element={<Navigate to="/home" />} /> {/* Redirection vers /auth */}
           <Route path="/auth" element={<Auth />} /> {/* Auth route */}
           <Route path="/home" element={<Home />} />
-          <Route path="/recipes" element={<Recipes />} />
+          <Route path="/recipes/" element={<Recipes />} />
           <Route path="/RecipeList" element={<RecipeList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/RecetteDetail" element={<RecetteDetail />} />
+          <Route path="/RecetteDetail/:userId/:recipeId" element={<RecetteDetail />} />
           <Route path="/RecetteForm" element={<RecetteForm />} />
           <Route path="/CreateRecipe" element={<CreateRecipe />} />
           <Route path="/EditRecipe" element={<EditRecipe />} />
