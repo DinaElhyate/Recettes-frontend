@@ -1,13 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { MdEdit } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
 
 export default function RecetteForm() {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes] = useState([
+        {
+            titre: "Spaghetti Bolognese",
+            description: "Recette classique de spaghetti avec une sauce bolognese.",
+            image: "https://via.placeholder.com/100",
+        },
+        {
+            titre: "Salade César",
+            description: "Salade avec des croûtons, du parmesan et de la sauce César.",
+            image: "https://via.placeholder.com/100",
+        },
+    ]);
+
     const [showForm, setShowForm] = useState(false);
     const [newRecipe, setNewRecipe] = useState({ titre: "", description: "", image: "" });
     const [editingIndex, setEditingIndex] = useState(null);
@@ -84,65 +93,37 @@ export default function RecetteForm() {
         }
     };
 
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-    const [recipeToDelete, setRecipeToDelete] = useState(null);
-    
-    const deleteRecipe = async (recipe) => {
-        console.log('Recipe to delete:', recipe);
-        if (!recipe) {
-            console.error('Recette non définie');
-            return;
-        }
-        setRecipeToDelete(recipe);
-        setShowDeleteConfirmation(true);
-    };
-    
-    const confirmDelete = async () => {
-        const userId = getUserIdFromSessionStorage();
-        
-        if (!userId || !recipeToDelete) {
-            console.error('Données manquantes:', { userId, recipeToDelete });
-            return;
-        }
+    const deleteRecipe = async (index) => {
+        const userId = "123"; // Remplacez par l'ID de l'utilisateur actuel
+        const recipeId = recipes[index].id; // Assurez-vous que chaque recette a un `id` correspondant au backend
     
         try {
-            console.log('Tentative de suppression de la recette:', recipeToDelete);
-            
-            const response = await axios.delete(
-                `http://localhost:8085/api/recipes/${userId}/${recipeToDelete.recipeId}`
-                
-            );
-            
-            if (response.data.success) {
-                
-                const updatedRecipes = recipes.filter(r => r.recipeId !== recipeToDelete.recipeId);
+            const response = await axios.delete(`/api/recipes/${userId}/${recipeId}`, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                const updatedRecipes = [...recipes];
+                updatedRecipes.splice(index, 1);
                 setRecipes(updatedRecipes);
+            } else {
+                console.error("Erreur lors de la suppression de la recette");
             }
-            
-            setShowDeleteConfirmation(false);
-            setRecipeToDelete(null);
         } catch (error) {
-            console.error('Erreur lors de la suppression:', error);
-            setShowDeleteConfirmation(false);
-            setRecipeToDelete(null);
-
+            console.error("Erreur réseau : ", error);
         }
-        navigate('/home'); 
     };
     
-    const cancelDelete = () => {
-        setShowDeleteConfirmation(false);
-        setRecipeToDelete(null);
 
+    const editRecipe = (index) => {
+        setEditingIndex(index);
+        navigate('/edit-recipe', { state: { recipe: recipes[index] } });
     };
-
-    const editRecipe = (recipe) => { 
-        navigate('/EditRecipe', { state: { recipe: recipe } }); 
-    };
+    
 
     const toggleForm = () => {
         setShowForm(!showForm);
-        navigate('/CreateRecipe'); 
+        navigate('/create-recipe'); 
     };
 
 
@@ -150,7 +131,7 @@ export default function RecetteForm() {
         container: {
             padding: '20px',
             fontFamily: 'Arial, sans-serif',
-            marginBottom: '300px',
+            marginBottom:'300px',
         },
         buttonRightContainer: {
             display: 'flex',

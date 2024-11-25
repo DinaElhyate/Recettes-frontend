@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
+import { useState } from 'react';
+import RecipeCard from "./RecipeCard";
 export default function RecetteDetail() {
     const [recipe, setRecipe] = useState(null); // Initialiser recipe comme null
     const { userId, recipeId } = useParams();
@@ -16,13 +15,115 @@ export default function RecetteDetail() {
     }, [userId, recipeId]);
 
     const styles = {
-        container: { padding: '20px', textAlign: 'center' },
-        header: { marginBottom: '20px' },
-        title: { fontSize: '2em', fontWeight: 'bold' },
-        image: { width: '300px', height: 'auto', marginTop: '20px' },
-        description: { fontStyle: 'italic', marginBottom: '20px' },
-        ingredients: { textAlign: 'left', marginBottom: '20px' },
-        instructions: { textAlign: 'left' }
+        
+        container: {
+            padding: '20px',
+            fontFamily: 'Arial, sans-serif',
+        },
+        header: {
+            
+            marginBottom: '20px',
+        },
+        image: { width: '100%', height: '400px', objectFit: 'cover', marginTop: '20px', },
+       
+        title: { fontSize: '2rem', fontWeight: 'bold', color: 'red',marginBottom:'10px', },
+        info: {
+            lineHeight: '1.6',
+        },
+        sectionTitle: {
+            marginTop: '20px',
+            marginBottom: '10px',
+        },
+        durationContainer: {
+            marginTop: '20px',
+
+            border: 'dashed red',
+            padding: '10px',
+            gridrow:'1',
+            
+        },
+        durationRow: {
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginBottom: '5px', 
+            
+        },
+        durationText: {
+            margin: '0', 
+            fontSize: '16px',
+            lineHeight: '1.5', 
+        },
+        durationValue: {
+            margin: '0',
+            fontSize: '16px', 
+            lineHeight: '1.5',
+            fontWeight: 'bold', 
+        },
+        list: {
+            marginLeft: '20px',
+        }, stepTitle: {
+            fontWeight: 'bold',
+            marginTop: '10px',
+        },
+        stepDescription: {
+            marginLeft: '20px',
+        },
+        
+        commentInput: {
+            marginBottom: '10px',
+            width: '100%',
+            padding: '10px',
+            fontSize: '14px',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+        },
+       
+        commentItem: {
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            padding: '10px',
+            borderRadius: '5px',
+            backgroundColor: '#f9f9f9',
+        },
+        submitButton: {
+            appearance: 'none',
+            userSelect: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            cursor: 'pointer',
+            boxSizing: 'border-box',
+            backgroundColor: 'var(--primary-color)',
+            color: 'white',
+            padding: '10px 15px',
+            border: 'none',
+            borderRadius: '5px',
+            fontSize: '14px', 
+            transition: 'background-color 0.3s ease',
+        },  
+        recipesContainer: {
+            display: 'flex',               
+            flexWrap: 'wrap',             
+            justifyContent: 'space-between', 
+            gap: '20px',                  
+            margin: '20px 0',            
+        },
+    
+        recipeCard: {
+            flex: '1 1 calc(30% - 20px)', 
+            maxWidth: '300px',            
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', 
+            borderRadius: '8px',         
+            overflow: 'hidden',           
+            transition: 'transform 0.3s',  
+        },
+        
+        recipeCardHover: {
+            transform: 'scale(1.05)',     
+        },
+        
     };
 
     return (

@@ -6,18 +6,17 @@ import {
 } from "react-router-dom"
 
 import Navbar from "./components/Navbar"
-import Footer from "./components/Footer";
+
 
 import Home from "./pages/Home";
 import Recipes from "./pages/Recipes";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
+import About from "./components/About";
 import RecetteDetail from "./components/RecetteDetail";
 import RecetteForm from "./components/RecetteForm";
-import RecipeList from "./components/RecipeList";
-import CreateRecipe from "./components/CreateRecipe";
-import EditRecipe from"./components/EditRecipe";
-
+import CreateRecipePage from "./components/create-recipe";
+import EditRecipePage from "./components/edit-recipe";
 
 function App() {
   return (
@@ -31,13 +30,14 @@ function App() {
           <Route path="/recipes/" element={<Recipes />} />
           <Route path="/RecipeList" element={<RecipeList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/RecetteDetail/:userId/:recipeId" element={<RecetteDetail />} />
-          <Route path="/RecetteForm" element={<RecetteForm />} />
-          <Route path="/CreateRecipe" element={<CreateRecipe />} />
-          <Route path="/EditRecipe" element={<EditRecipe />} />
+          <Route  path="/auth" element={<Auth/>}/>
+          <Route path="/RecetteDetail" element={<RecetteDetail/>}/>
+          <Route path="/RecetteForm" element={<RecetteForm/>}/>
+          <Route path="/create-recipe" element={<CreateRecipePage />} />
+          <Route path="/edit-recipe" element={<EditRecipePage />} />
         </Routes>
       </div>
-      <Footer />
+
     </Router>
   )
 }

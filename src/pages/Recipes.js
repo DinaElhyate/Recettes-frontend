@@ -3,13 +3,12 @@ import PreviousSearches from "../components/PreviousSearches";
 import RecipeCard from "../components/RecipeCard";
 
 export default function Recipes() {
-    const [recipes, setRecipes] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    
+    const [recipes, setRecipes] = useState([]); // State to hold recipes
+    const [loading, setLoading] = useState(true); // State to manage loading state
+    const [error, setError] = useState(null); // State to manage errors
 
     useEffect(() => {
+        // Function to fetch recipes from the API
         const fetchRecipes = async () => {
             try {
                 const response = await fetch("http://localhost:8085/api/users/user-details");
@@ -18,53 +17,36 @@ export default function Recipes() {
                 }
                 const data = await response.json();
 
+                // Extract recipes with user details
                 const allRecipes = data.flatMap(user =>
                     user.recipes.map(recipe => ({
                         ...recipe,
-                        userId: user.userId,
                         username: user.username,
                         role: user.role,
-                        userImage: user.image || "default-image-path.png",
-                        ingredients: recipe.ingredients || [],
-                        instructions: recipe.instructions || [],
-                        cookingTime: recipe.cookingTime,
-                        difficulty: recipe.difficulty,
-                        category: recipe.category,
-                        description: recipe.description,
-                        image: recipe.image,
-                        createdAt: recipe.createdAt
+                        userImage: user.image || "http://example.com/default-user-image.jpg" // Valeur par défaut si l'image est null
                     }))
                 );
 
-                const filteredRecipes = allRecipes.filter(recipe => recipe.title);
-
-                console.log(filteredRecipes);
-                setRecipes(filteredRecipes);
+                // Filtrer les recettes qui existent
+                const filteredRecipes = allRecipes.filter(recipe => recipe.title); // Filtrer les recettes sans titre
+                setRecipes(filteredRecipes); // Set the fetched recipes
             } catch (error) {
-                setError(error);
+                setError(error); // Set any errors
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading to false once data is fetched
             }
         };
 
-        fetchRecipes();
-    }, []);
+        fetchRecipes(); // Call the fetch function
+    }, []); // Empty dependency array to run only once on mount
 
-    
-    const filteredRecipes = recipes.filter(recipe =>
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
+    // Handle loading and error states
     if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
+        return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div className="text-red-500 text-center p-4">Error: {error.message}</div>;
+        return <div>Error: {error.message}</div>;
     }
 
     return (
@@ -72,20 +54,8 @@ export default function Recipes() {
             
             <PreviousSearches setSearchQuery={setSearchQuery} />
             <div className="recipes-container">
-                {filteredRecipes.sort(() => Math.random() - 0.5).map((recipe, index) => (
-                    <RecipeCard
-                        userId = {recipe.userId}
-                        recipeId = {recipe.id}
-                        key={index}
-                        recipe={{
-                            ...recipe,
-                            user: {
-                                username: recipe.username,
-                                image: recipe.userImage,
-                                role: recipe.role
-                            }
-                        }}
-                    />
+                {recipes.sort(() => Math.random() - 0.5).map((recipe, index) => (
+                    <RecipeCard key={index} recipe={recipe} />
                 ))}
             </div>
             <style jsx>{`
